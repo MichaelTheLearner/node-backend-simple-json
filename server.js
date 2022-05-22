@@ -7,27 +7,36 @@ const figlet = require('figlet')
 const server = http.createServer((req, res) => {
   const page = url.parse(req.url).pathname;
   const params = querystring.parse(url.parse(req.url).query);
+
+const fsReadFile = (pageFileName, contentType) => {
+  fs.readFile(pageFileName, function(err, data) {
+    res.writeHead(200, {'Content-Type': contentType});
+    res.write(data);
+    res.end();
+  });
+}
+const fsReadFileCSS = (filePath) => {
+  fs.readFile(filePath, function(err, data) {
+    res.write(data);
+    res.end();
+  });
+}
   console.log(page);
   if (page == '/') {
-    fs.readFile('index.html', function(err, data) {
-      res.writeHead(200, {'Content-Type': 'text/html'});
-      res.write(data);
-      res.end();
-    });
+    fsReadFile('index.html', 'text/html')
+    
   }
   else if (page == '/otherpage') {
-    fs.readFile('otherpage.html', function(err, data) {
-      res.writeHead(200, {'Content-Type': 'text/html'});
-      res.write(data);
-      res.end();
-    });
+    fsReadFile('otherpage.html','text/html')
+    
   }
   else if (page == '/otherotherpage') {
-    fs.readFile('otherotherpage.html', function(err, data) {
-      res.writeHead(200, {'Content-Type': 'text/html'});
-      res.write(data);
-      res.end();
-    });
+    fsReadFile('otherotherpage.html', 'text/html')
+    // fs.readFile('otherotherpage.html', function(err, data) {
+    //   res.writeHead(200, {'Content-Type': 'text/html'});
+    //   res.write(data);
+    //   res.end();
+    // });
   }
   else if (page == '/api') {
     if('student' in params){
@@ -52,16 +61,14 @@ const server = http.createServer((req, res) => {
     }//student if
   }//else if
   else if (page == '/css/style.css'){
-    fs.readFile('css/style.css', function(err, data) {
-      res.write(data);
-      res.end();
-    });
+    // fs.readFile('css/style.css', function(err, data) {
+    //   res.write(data);
+    //   res.end();
+    // });
+    fsReadFileCSS('css/style.css');
   }else if (page == '/js/main.js'){
-    fs.readFile('js/main.js', function(err, data) {
-      res.writeHead(200, {'Content-Type': 'text/javascript'});
-      res.write(data);
-      res.end();
-    });
+    
+    fsReadFile('js/main.js', 'text/javascript')
   }else{
     figlet('404!!', function(err, data) {
       if (err) {
